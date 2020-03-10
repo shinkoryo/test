@@ -1,3 +1,25 @@
+import pandas.tseries.offsets as offsets
+
+d = {'nam_id': ['001', '002'], 
+     'start_date': ['2019-11-11', '2019-11-10'],
+     'len':[2,3],
+     'drtnp':[1.34, 2.3]}
+df = pd.DataFrame(data=d)
+df2 = pd.DataFrame(index=[])
+
+for i in list(df.index):
+    record = df.loc[i]
+    for j in range(df.loc[i]['len']):
+        record['len'] = j
+        df2 = df2.append(record, ignore_index=True)        
+
+df3 = pd.concat([df, df2])
+def f1(df):
+    return pd.to_datetime(df.start_date) + offsets.Day(df.len)
+
+df3['start_date'] = df3[['start_date', 'len']].apply(f1, axis=1)  
+
+df3
 
 class Student():
     def get_score(self):
