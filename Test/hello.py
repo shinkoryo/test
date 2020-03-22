@@ -1,4 +1,12 @@
-def main():
-    print("Hello")
+# %%
 
-main()
+import numpy as np
+
+x = np.arange(10)
+x
+
+#%%
+
+
+
+test

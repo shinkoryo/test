@@ -1,0 +1,251 @@
+table: glb2
+factors:
+  - name: acc_cf
+    formula: (x1 + x2)/ x3
+    sources:
+      - qtr5y:
+        - formula: 
+          # (self.x1 + self.x2)/self.x3
+        - condition:
+          - cond1:[(df.cur_a_5y == df.cur_b_5y) & (df.cur_b_5y == df.cur_c_5y), (df.qtr_a_5y + df.qtr_b_5y) / df.qtr_c_5y]
+        - name: x1
+          table: tot5y
+          column: qtr
+          condition:
+            item: a
+          pattern:
+            cur_a_5y: [USD, CHN, JPN, KRN]
+            rate_a_5y: [0.5]
+            qtr_a_5y: [2]
+        - name: x2
+          table: tot5y
+          column: qtr
+          condition:
+            item: b
+          pattern:
+            cur_b_5y: [USD, CHN, JPN, KRN]
+            rate_b_5y: [0.5]
+            qtr_b_5y: [3]
+        - name: x2a
+          table: tot5y
+          column: qtr
+          condition:
+            item: b
+          pattern:
+            qtr_b_5y_a: [3]
+        - name: x2b
+          table: tot5y
+          column: qtr
+          condition:
+            item: b
+          pattern:
+            qtr_b_5y_b: [3]
+        - name: x3
+          table: tot5y
+          column: qtr
+          condition:
+            item: c
+          pattern:
+            cur_c_5y: [USD, CHN, JPN, KRN]
+            rate_c_5y: [0.5]
+            qtr_c_5y: [10]
+      - ann5y:
+        - name: x1
+          table: tot5y
+          column: ann
+          condition:
+            item: a
+          pattern:
+            cur_a_5y: [USD, CHN, JPN, KRN]
+            rate_a_5y: [0.5]
+            ann_a_5y: [10]
+        - name: x2
+          table: tot5y
+          column: ann
+          condition:
+            item: b
+          pattern:
+            cur_b_5y: [USD, CHN, JPN, KRN]
+            rate_b_5y: [0.5]
+            ann_b_5y: [2]
+        - name: x1
+          table: tot5y
+          column: ann
+          condition:
+            item: c
+          pattern:
+            cur_c_5y: [USD, CHN, JPN, KRN]
+            rate_c_5y: [0.5]
+            ann_c_5y: [3]
+      - qtr3y:
+        - name: x1
+          table: tot3y
+          column: qtr
+          condition:
+            item: a
+          pattern:
+            cur_a_3y: [USD, CHN, JPN, KRN]
+            rate_a_3y: [0.5]
+            qtr_a_3y: [3]
+        - name: x2
+          table: tot3y
+          column: qtr
+          condition:
+            item: b
+          pattern:
+            cur_b_3y: [USD, CHN, JPN, KRN]
+            rate_b_3y: [0.5]
+            qtr_b_3y: [4]
+        - name: x3
+          table: tot3y
+          column: qtr
+          condition:
+            item: c
+          pattern:
+            cur_c_3y: [USD, CHN, JPN, KRN]
+            rate_c_3y: [0.5]
+            qtr_c_3y: [2]
+      - ann3y:
+        - name: x1
+          table: tot3y
+          column: ann
+          condition:
+            item: a
+          pattern:
+            cur_a_3y: [USD, CHN, JPN, KRN]
+            rate_a_3y: [0.5]
+            ann_a_3y: [7]
+        - name: x2
+          table: tot3y
+          column: ann
+          condition:
+            item: b
+          pattern:
+            cur_b_3y: [USD, CHN, JPN, KRN]
+            rate_b_3y: [0.5]
+            ann_b_3y: [10]
+        - name: x1
+          table: tot3y
+          column: ann
+          condition:
+            item: c
+          pattern:
+            cur_c_3y: [USD, CHN, JPN, KRN]
+            rate_c_3y: [0.5]
+            ann_c_3y: [3]
+            
+#  - name: acc_cf2
+#    formula: (x1 + x2)/x3
+#    sources:
+#      - qtr5y:
+#        - name: x1
+#          table: tot5y
+#          column: qtr
+#          condition:
+#            item: a
+#          pattern:
+#            cur_a_5y: [USD, CHN, JPN, KRN]
+#            rate_a_5y: [0.5]
+#            qtr_a_5y: [any_value]
+#        - name: x2
+#          table: tot5y
+#          column: qtr
+#          condition:
+#            item: b
+#          pattern:
+#            cur_b_5y: [USD, CHN, JPN, KRN]
+#            rate_b_5y: [0.5]
+#            qtr_b_5y: [any_value]
+#        - name: x3
+#          table: tot5y
+#          column: qtr
+#          condition:
+#            item: c
+#          pattern:
+#            cur_c_5y: [USD, CHN, JPN, KRN]
+#            rate_c_5y: [0.5]
+#            qtr_c_5y: [any_value]
+#      - ann5y:
+#        - name: x1
+#          table: tot5y
+#          column: ann
+#          condition:
+#            item: a
+#          pattern:
+#            cur_a_5y: [USD, CHN, JPN, KRN]
+#            rate_a_5y: [0.5]
+#            ann_a_5y: [any_value]
+#        - name: x2
+#          table: tot5y
+#          column: ann
+#          condition:
+#            item: b
+#          pattern:
+#            cur_b_5y: [USD, CHN, JPN, KRN]
+#            rate_b_5y: [0.5]
+#            ann_b_5y: [any_value]
+#        - name: x1
+#          table: tot5y
+#          column: ann
+#          condition:
+#            item: c
+#          pattern:
+#            cur_c_5y: [USD, CHN, JPN, KRN]
+#            rate_c_5y: [0.5]
+#            ann_c_5y: [any_value]
+#      - qtr3y:
+#        - name: x1
+#          table: tot3y
+#          column: qtr
+#          condition:
+#            item: a
+#          pattern:
+#            cur_a_3y: [USD, CHN, JPN, KRN]
+#            rate_a_3y: [0.5]
+#            qtr_a_3y: [any_value]
+#        - name: x2
+#          table: tot3y
+#          column: qtr
+#          condition:
+#            item: b
+#          pattern:
+#            cur_b_3y: [USD, CHN, JPN, KRN]
+#            rate_b_3y: [0.5]
+#            qtr_b_3y: [any_value]
+#        - name: x3
+#          table: tot3y
+#          column: qtr
+#          condition:
+#            item: c
+#          pattern:
+#            cur_c_3y: [USD, CHN, JPN, KRN]
+#            rate_c_3y: [0.5]
+#            qtr_c_3y: [any_value]
+#      - ann3y:
+#        - name: x1
+#          table: tot3y
+#          column: ann
+#          condition:
+#            item: a
+#          pattern:
+#            cur_a_3y: [USD, CHN, JPN, KRN]
+#            rate_a_3y: [0.5]
+#            ann_a_3y: [any_value]
+#        - name: x2
+#          table: tot3y
+#          column: ann
+#          condition:
+#            item: b
+#          pattern:
+#            cur_b_3y: [USD, CHN, JPN, KRN]
+#            rate_b_3y: [0.5]
+#            ann_b_3y: [any_value]
+#        - name: x1
+#          table: tot3y
+#          column: ann
+#          condition:
+#            item: c
+#          pattern:
+#            cur_c_3y: [USD, CHN, JPN, KRN]
+#            rate_c_3y: [0.5]
+#            ann_c_3y: [any_value]            

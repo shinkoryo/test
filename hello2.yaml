@@ -1,0 +1,13 @@
+- func: set
+  args:
+    - your_name
+    - cuhey3
+- func: set
+  args:
+    - greeting
+    - Konichiwa!
+- func: print
+  args:
+    - Hello, World!
+    - $: [format, 'Your name is... {}! {}', $: your_name, $: greeting]
+    - Goodbye!

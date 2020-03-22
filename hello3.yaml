@@ -1,0 +1,11 @@
+hello3.yaml
+- set:
+    - your_name
+    - cuhey3
+- set:
+    - greeting
+    - Konichiwa!
+- print:
+    - Hello, World!
+    - $: [format, 'Your name is... {}! {}', $: your_name, $: greeting]
+    - Goodbye!
