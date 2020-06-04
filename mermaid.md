@@ -38,7 +38,7 @@ enriched_data[/enriched_data/]
 
 
 
-start --> init
+start --> |取得データの定義を設定|init
 init --> dataprovider
 dataprovider --> make_nam_id_list --> df_exshare
 dataprovider --> calc_total1 --> df_qtr
