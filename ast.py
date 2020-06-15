@@ -74,3 +74,32 @@ lst = x_format.splitlines()
 string = remove_letter(lst, 'ctx:', 'body:', ': Name:', ': arguments:')
 string = [a for a in string if len(a.lstrip()) > 0]
 string
+
+
+###################################
+###################################
+###################################
+load checked
+import ast
+import yaml
+import ruamel.yaml
+
+yml = ruamel.yaml.YAML()
+
+# yml_lod = yml.load(yaml.dump(tree))
+# yml_lod
+
+
+yaml_dump = yaml.dump(tree)
+lst = yaml_dump.splitlines()
+
+lst = remove_letter(lst, 'ctx:', 'state:', 'col_offset:', 'level:', 'lineno:')
+string = '\n'.join(lst)
+
+yml = ruamel.yaml.YAML()
+
+yml_lod = yml.load(string)
+# x = yml.dump(yml_lod)
+
+with open('out_ruamel.yml', 'w', encoding = 'utf-8') as stream:
+    yml.dump(yml_lod, stream=stream)
