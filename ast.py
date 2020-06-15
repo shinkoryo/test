@@ -118,12 +118,12 @@ def remove_str(lst, *args):
         lst =  [key for key in lst if arg not in key]
     return lst
 
-def insert_name(lst):
+def insert_str(lst):
     i = 0
     string = '- !!python/object/apply:_ast.'
-    name_list = [(i, v.replace(string, '  ') + ':') for i, v in enumerate(lst) if string in v]
+    str_list = [(i, v.replace(string, '  ') + ':') for i, v in enumerate(lst) if string in v]
     
-    for index_no, value in name_list:
+    for index_no, value in str_list:
         lst.insert(index_no + i + 1, value)
         i += 1
     return lst
@@ -140,7 +140,7 @@ string = '!!python/object/apply:_ast.Module\n  body:\n'
 dump = yaml.dump(tree)
 lst = dump.splitlines()
 lst = remove_str(lst, 'ctx:', 'state:', 'col_offset:', 'level:', 'lineno:', 'op: ')
-lst = insert_name(lst)
+lst = insert_str(lst)
 
 string = '\n'.join(lst)
 yml = ruamel.yaml.YAML()
@@ -148,8 +148,5 @@ yml = ruamel.yaml.YAML()
 output_dict = json.loads(json.dumps(yml.load(string)))
 
 with open('out_yaml.yml', 'w', encoding = 'utf-8') as stream:
-    yml.dump(output_dict, stream)
-    
-    
-    
+    yml.dump(output_dict, stream)    
     
