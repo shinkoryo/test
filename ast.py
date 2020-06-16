@@ -200,3 +200,44 @@ def ordered_yaml_dump(data, filename, Dumper=yaml.SafeDumper):
  ###  使用 
 kv_conf_tmpl = ordered_yaml_load("./kkkk.conf")
 ordered_yaml_dump(kv_conf_tmpl, "./after_kk.conf")
+
+
+
+=========================================================================================
+# 参照リンク　 
+# https://github.com/ivan111/vpyast/blob/master/main.py
+from _ast import AST
+import ast
+import json
+import ruamel.yaml
+
+
+def ast2json(node):
+    if not isinstance(node, AST):
+        raise TypeError('expected AST, got %r' % node.__class__.__name__)
+
+    def _format(node):
+        
+        if isinstance(node, AST):
+            fields = [('PyType', _format(node.__class__.__name__))]
+            fields += [(a, _format(b)) for a, b in ast.iter_fields(node)]
+            if node._attributes:
+                fields.extend([(a, _format(getattr(node, a))) for a in node._attributes])
+
+            return '{ %s }' % ', '.join(('"%s": %s' % field for field in fields))
+
+        if isinstance(node, list):
+            return '[ %s ]' % ', '.join([ _format(x) for x in node])
+
+        return json.dumps(node)
+
+
+    return _format(node)
+
+node = ast.parse(Monster)
+obj = json.loads(ast2json(node))
+
+yml = ruamel.yaml.YAML()
+with open('out_yaml3.yml', 'w', encoding = 'utf-8') as stream:
+    yml.dump(obj, stream)
+    
