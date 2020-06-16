@@ -150,3 +150,53 @@ output_dict = json.loads(json.dumps(yml.load(string)))
 with open('out_yaml.yml', 'w', encoding = 'utf-8') as stream:
     yml.dump(output_dict, stream)    
     
+
+    
+——————————————————————————————————————————————————————————————————————————————
+
+from collections import OrderedDict
+import yaml
+
+def ordered_yaml_load(yaml_path, Loader=yaml.Loader,
+                      object_pairs_hook=OrderedDict):
+    class OrderedLoader(Loader):
+        pass
+
+    def construct_mapping(loader, node):
+        loader.flatten_mapping(node)
+        return object_pairs_hook(loader.construct_pairs(node))
+
+    OrderedLoader.add_constructor(
+        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+        construct_mapping)
+    with open(yaml_path) as stream:
+        return yaml.load(stream, OrderedLoader)
+
+
+def ordered_yaml_dump(data, filename, Dumper=yaml.SafeDumper):
+    class OrderedDumper(Dumper):
+        pass
+
+    def _dict_representer(dumper, data):
+        return dumper.represent_mapping(
+            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
+            
+    ## 这里是 把 生成文件里的 “null” 转为 “”
+    def represent_none(self,_):        
+     	return self.represent_scalar('tag:yaml.org,2002:null','')
+
+    stream = None
+    with open(filename, "w") as stream:
+        OrderedDumper.add_representer(OrderedDict, _dict_representer)
+        OrderedDumper.add_representer(type(None), represent_none)
+        yaml.dump(data,
+                  stream,
+                  OrderedDumper,
+                  default_flow_style=False,
+                  encoding='utf-8',
+                  allow_unicode=True)
+ 
+ 
+ ###  使用 
+kv_conf_tmpl = ordered_yaml_load("./kkkk.conf")
+ordered_yaml_dump(kv_conf_tmpl, "./after_kk.conf")
