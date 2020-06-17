@@ -241,3 +241,85 @@ yml = ruamel.yaml.YAML()
 with open('out_yaml3.yml', 'w', encoding = 'utf-8') as stream:
     yml.dump(obj, stream)
     
+ ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+import ast
+import json
+import ruamel.yaml
+from _ast import AST
+from collections import OrderedDict
+
+class Visitor(ast.NodeVisitor):
+    dump = []
+    
+    def visit_Name(self, node, data= None):
+
+        if data:
+            for field in node._fields:
+                val = getattr(node, field)
+
+                if isinstance(val, list):
+                    for l in val:
+                        self.visit_vame(l)
+                else:
+                    data[field] = val
+            
+        self.generic_visit(node)
+
+    def visit_Import(self, node):
+        print(node)
+        self.generic_visit(node)
+
+    def visit_ImportFrom(self, node):
+        name = node.__class__.__name__
+        data = OrderedDict()
+        data[name] = OrderedDict()
+
+        for field in node._fields:
+            val = getattr(node, field)
+    
+            if isinstance(val, AST):
+                print("ATS", val)
+            elif isinstance(val, list):
+                for l in val:
+                    self.visit_alias(l, data[name])
+            else:
+                data[name][field] = val
+        self.dump.append(data)
+                
+        self.generic_visit(node)
+
+    def visit_alias(self, node, data=None):
+
+        if data:
+            if 'names' not in data:
+                data['names'] = []
+            for field in node._fields:
+                val = getattr(node, field)
+
+                if isinstance(val, list):
+                    for l in val:
+                        self.visit_vame(l)
+                else:
+                    temp = {}
+                    temp[field] = val
+                data['names'].append(temp)
+                print(data)
+
+        
+        self.generic_visit(node)
+
+
+SOURCE = """
+from test.lib import libAAA
+from test.lib2 import libBBB, libCCC
+"""
+
+if __name__ == "__main__":
+    root = ast.parse(SOURCE)
+    visitor = Visitor()
+    visitor.visit(root)
+    
+    print(ast.dump(root))
+    print()
+    print(visitor.dump)
+    
