@@ -451,3 +451,721 @@ if __name__ == "__main__":
 #     yml = ruamel.yaml.YAML()
 #     with open('test.yaml', 'w', encoding = 'utf-8') as stream:
 #         yml.dump(json.loads(json.dumps(visitor.dump)), stream)
+
+
+###################################################
+###################################################
+###################################################
+# ################
+# ver 3
+
+import ast
+import json
+import yaml
+import ruamel.yaml
+from _ast import AST
+
+
+class Visitor(ast.NodeVisitor):
+    def __init__(self):
+        self.dump = []
+        self.body = None
+
+    def init(self, node):
+        self.name = node.__class__.__name__
+        self.data = {}
+
+        
+    def exchange_data(self, node, data, dump):
+        
+        if isinstance(dump, list):
+            for i, v in enumerate(dump):
+                
+                if isinstance(v, AST) and v == node:
+                    dump[i] = data
+                self.exchange_data(node, data, v)
+                
+        if isinstance(dump, dict):
+            for k, v in dump.items():
+                if isinstance(v, AST) and v == node:
+                    dump[k] = data
+                self.exchange_data(node, data, v)
+
+    def make_data(self, node):
+        name = node.__class__.__name__
+        data = {}
+        data[name] = {}
+        
+        for field, value in ast.iter_fields(node):
+            if field not in ['level', 'ctx']:
+                data[name][field] = value
+        if node._attributes:
+            for a in node._attributes:
+                if a == 'lineno':
+                    data[name][a] = getattr(node, a)
+#             fields.extend([(a, _format(getattr(node, a))) for a in node._attributes])
+
+        return data
+    
+#     def decorator(func):
+#         def inner(self, *args, **kwargs):
+#             func(self, *args, **kwargs)
+#             name = node.__class__.__name__
+#             data = {}
+#             data[name] = {}
+        
+#             for field, value in ast.iter_fields(node):
+#                 if field not in ['level', 'cxt']:
+#                     data[name][field] = value
+#             print(data)
+#         return inner
+
+            
+
+    def visit(self, node):
+        method = 'visit_' + node.__class__.__name__
+        visitor = getattr(self, method, self.generic_visit)
+        
+        if node.__class__.__name__ == 'Module':
+            self.body = node.body
+            self.dump = node.body
+
+        if node in self.body:
+            self.init(node)
+        
+        return visitor(node)
+    
+    def visit_Num(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Str(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_FormattedValue(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_JoinedStr(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Bytes(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_List(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Tuple(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Set(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Dict(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Ellipsis(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_NameConstant(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Name(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Load(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Store(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Del(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Starred(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Expr(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_UnaryOp(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_UAdd(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_USub(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Not(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Invert(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_BinOp(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Add(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Sub(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Mult(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Div(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_FloorDiv(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Mod(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Pow(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_LShift(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_RShift(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_BitOr(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_BitXor(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_BitAnd(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_MatMult(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_BoolOp(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_And(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Or(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Compare(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Eq(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_NotEq(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Lt(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_LtE(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Gt(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_GtE(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Is(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_IsNot(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_In(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_NotIn(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Call(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_keyword(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_IfExp(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Attribute(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Subscript(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Index(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Slice(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_ExtSlice(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_ListComp(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_SetComp(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_GeneratorExp(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_DictComp(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_comprehension(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Assign(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_AnnAssign(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_AugAssign(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Print(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Raise(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Assert(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Delete(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Pass(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Import(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+
+    def visit_ImportFrom(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_alias(self, node):
+        name = node.__class__.__name__
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump) 
+        self.generic_visit(node)
+
+    def visit_If(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_For(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_While(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Break(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Continue(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Try(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_TryFinally(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_TryExcept(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_ExceptHandler(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_With(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_withitem(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_FunctionDef(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Lambda(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_arguments(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_arg(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Return(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Yield(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_YieldFrom(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Global(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Nonlocal(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_ClassDef(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_AsyncFunctionDef(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_Await(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_AsyncFor(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+    def visit_AsyncWith(self, node):
+        data = self.make_data(node)
+
+        self.exchange_data(node, data, self.dump)
+        self.generic_visit(node)
+
+
+SOURCE = """
+from test.lib import libAAA
+
+class MyClass(object):
+    def __init__(self):
+        self.my_var = "my_var"
+
+    def decorator(func):
+        def inner(self, *args, **kwargs):
+            print(prefunc)
+            print(self.my_var)
+            func(self, *args, **kwargs)
+            print(after_func)
+        return inner
+
+    @decorator
+    def print_hoge(self, *args, **kwargs):
+        print("hoge")
+
+
+"""
+
+if __name__ == "__main__":
+    root = ast.parse(SOURCE)
+    visitor = Visitor()
+    visitor.visit(root)
+    
+    print()
+    print(ast.dump(root))
+    print()
+    print(visitor.dump)
+    print()
+    print(yaml.dump(visitor.dump, sort_keys=False))
+    
+#     yml = ruamel.yaml.YAML()
+#     with open('test.yaml', 'w', encoding = 'utf-8') as stream:
+#         yml.dump(json.loads(json.dumps(visitor.dump)), stream)
