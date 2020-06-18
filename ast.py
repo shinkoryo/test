@@ -330,4 +330,124 @@ if __name__ == "__main__":
     with open('test.yaml', 'w', encoding = 'utf-8') as stream:
         yml.dump(visitor.dump, stream)
    
+===================================================================================
+# ################
+# ver 3
 
+import ast
+import json
+import yaml
+import ruamel.yaml
+from _ast import AST
+
+
+class Visitor(ast.NodeTransformer):
+    def __init__(self):
+        self.dump = []
+        self.body = None
+
+    def init(self, node):
+        self.name = node.__class__.__name__
+        self.data = {}
+        
+        
+        
+    def set_dump(self, data):
+        self.dump = data
+
+    def dump_data(self, node, data):
+        print('===========================================')
+        print('view_node  ', node)
+        print('view_data  ', data)
+        print('view_dump  ', self.dump)
+#         for v in self.dump:
+#             if isinstance(v, AST):
+#                 if v , node
+#             if isinstance(v, list):
+                
+                
+#             if isinstance(v, dict):
+                
+        lst = [v if node != v else data for v in self.dump]
+        self.set_dump(lst)
+        
+    def make_data(self, node):
+        name = node.__class__.__name__
+        data = {}
+        data[name] = {}
+        
+        for field, value in ast.iter_fields(node):
+            if field not in ['level']:
+                data[name][field] = value
+
+        return data
+
+            
+
+    def visit(self, node):
+        method = 'visit_' + node.__class__.__name__
+        visitor = getattr(self, method, self.generic_visit)
+        
+        if node.__class__.__name__ == 'Module':
+            self.body = node.body
+            self.dump = node.body
+
+        if node in self.body:
+            self.init(node)
+        
+        return visitor(node)
+    
+#     def visit_Name(self, node, data= None):
+
+#         if data:
+#             for field in node._fields:
+#                 val = getattr(node, field)
+
+#                 if isinstance(val, list):
+#                     for l in val:
+#                         self.visit_vame(l)
+#                 else:
+#                     data[field] = val
+            
+#         self.generic_visit(node)
+
+#     def visit_Import(self, node):
+#         print(node)
+#         self.generic_visit(node)
+
+    def visit_ImportFrom(self, node):
+
+        data = self.make_data(node)
+
+        self.dump_data(node, data)                
+        self.generic_visit(node)
+
+    def visit_alias(self, node, data=None):
+
+        name = node.__class__.__name__
+        data = self.make_data(node)
+
+        self.dump_data(node, data[name])                
+        self.generic_visit(node)
+
+
+SOURCE = """
+from test.lib import libAAA
+from test.lib2 import libBBB, libCCC
+"""
+
+if __name__ == "__main__":
+    root = ast.parse(SOURCE)
+    visitor = Visitor()
+    visitor.visit(root)
+    
+    print()
+    print(ast.dump(root))
+    print()
+    print(visitor.dump)
+    print()
+    print(yaml.dump(visitor.dump, sort_keys=False))
+    
+#     yml = ruamel.yaml.YAML()
+#     with open('test.yaml', 'w', encoding = 'utf-8') as stream:
+#         yml.dump(json.loads(json.dumps(visitor.dump)), stream)
