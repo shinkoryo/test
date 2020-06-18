@@ -244,6 +244,7 @@ with open('out_yaml3.yml', 'w', encoding = 'utf-8') as stream:
  ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 import ast
 import json
+import yaml
 import ruamel.yaml
 from _ast import AST
 from collections import OrderedDict
@@ -289,22 +290,22 @@ class Visitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_alias(self, node, data=None):
-
         if data:
-            if 'names' not in data:
-                data['names'] = []
+            temp = {}
+            name = 'names'
+            
+            if name not in data:
+                data[name] = []
+            
             for field in node._fields:
                 val = getattr(node, field)
-
                 if isinstance(val, list):
                     for l in val:
                         self.visit_vame(l)
-                else:
-                    temp = {}
+                else:                    
                     temp[field] = val
-                data['names'].append(temp)
-                print(data)
 
+            data[name].append(temp)
         
         self.generic_visit(node)
 
@@ -322,4 +323,11 @@ if __name__ == "__main__":
     print(ast.dump(root))
     print()
     print(visitor.dump)
+    print()
+#     print(json.dumps(visitor.dump))
     
+    yml = ruamel.yaml.YAML()
+    with open('test.yaml', 'w', encoding = 'utf-8') as stream:
+        yml.dump(visitor.dump, stream)
+   
+
