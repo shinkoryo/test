@@ -1169,3 +1169,84 @@ if __name__ == "__main__":
 #     yml = ruamel.yaml.YAML()
 #     with open('test.yaml', 'w', encoding = 'utf-8') as stream:
 #         yml.dump(json.loads(json.dumps(visitor.dump)), stream)
+
+
+###################################################################
+import argparse
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('arg')
+    args = parser.parse_args()
+
+    filename = args.arg
+
+    with open(filename, 'r', encoding='utf-8') as f:
+        source = f.read()
+
+        root = ast.parse(source)
+        visitor = Visitor()
+        visitor.visit(root)
+
+    print()
+    print(ast.dump(root))
+#     print()
+#     print(visitor.dump)
+#     print()
+#     print(yaml.dump(visitor.dump, sort_keys=False))
+
+#     with open('test.yaml', 'w', encoding = 'utf-8') as f:
+#         yaml.dump(visitor.dump, f)
+
+###################################################################
+#　フォルダ作成
+import pathlib
+import glob
+import re
+import os
+
+dir = r"C:\Work\83.Dev\test\python\GlobalFactor\src"
+p_temp = pathlib.Path(dir).rglob('*')
+
+# lst = glob.glob(dir, recursive = True)
+lst = [str(p) for p in p_temp if p.is_dir()]
+lst = [l.replace("C:\\Work\\83.Dev\\test\\python\\GlobalFactor", ".") for l in lst]
+# lst = [re.sub(r"\\*.py", "", l) for l in lst]
+print(lst)
+
+for l in lst:
+    os.makedirs(l)
+
+
+###################################################################
+#　YAML作成
+import glob
+import re
+import os
+
+dir = r"C:\Work\83.Dev\test\python\GlobalFactor\src\**\*.py"
+
+lst = glob.glob(dir, recursive = True)
+# lst = [l.replace("C:\\Work\\83.Dev\\test\\python\\GlobalFactor", ".").replace(".py", ".yaml") for l in lst]
+# lst = [re.sub(r"\\*.py", "", l) for l in lst]
+
+for l in lst:
+    filename = l
+    out_filename = l.replace("C:\\Work\\83.Dev\\test\\python\\GlobalFactor", ".").replace(".py", ".yaml")
+    print(filename)
+    print(out_filename)
+    
+    with open(filename, 'r', encoding='utf-8') as f:
+        source = f.read()
+
+    root = ast.parse(source)
+    visitor = Visitor()
+    visitor.visit(root)
+
+#     print(ast.dump(root))
+
+    with open(out_filename, 'w', encoding = 'utf-8') as f:
+        yaml.dump(visitor.dump, f)
+
+
