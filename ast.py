@@ -1250,3 +1250,28 @@ for l in lst:
         yaml.dump(visitor.dump, f)
 
 
+        
+##########################################################
+ドットで属性にアクセスするとき、Attributeノードで表します。
+例えば；
+
+・class Attribute(value, attr, ctx)
+snake.colour
+
+・class Call(func, args, keywords, starargs, kwargs)
+funcの値を表したいとき
+monster.howl()
+
+・class Assign(targets, value, type_comment)
+aのvalueにアクセスしたいとき
+test = a.value
+
+・class AnnAssign(target, annotation, value, simple)
+aのvalueにアクセスしたいとき
+a.value: int
+
+・class AugAssign(target, op, value)
+aのvalueにアクセスしたいとき
+r += a.value
+
+[リンク] https://greentreesnakes.readthedocs.io/en/latest/nodes.html#Attribute
