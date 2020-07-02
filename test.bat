@@ -23,3 +23,19 @@ FOR /d %%i IN (temp\*) DO (
   SET temp=%%i
   (ECHO !temp:temp\=%!) >> output.txt
 )
+
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+LinuxコマンドとWindowsコマンドで、それぞれListWorksフォルダーの一覧を更新日時が新しい順で取得します。
+取得したリストをもとに、マッピングリストを作成します。
+
+Linuxコマンド：
+	ls -ltri --time-style="+%Y/%m/%d %H:%M:%S.%N" >/tmp/lvdata_sortbymtime.txt
+	
+Windowsコマンド：
+	dir /a:d /TW /OD \\10.11.1.35\lv-data$\LVDATA |findstr /v /r "\.\.*$">c:\tmp\Windows_sortBymtime.txt
+
+図を貼り付ける。
+
+
+
